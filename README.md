@@ -136,3 +136,13 @@ Webová stránka se úspěšně zobrazuje na portu 80 s obsahem generovaným Ans
 ## Poznámky
 - Projekt je izolovaný od Codespace a hlavního GitHub repozitáře
 - Vhodné pro testování, výuku nebo demonstraci provisioning procesů
+
+9. Autor
+Projekt vypracovala Michaela Kučerová
+Verze: 1.0
+Datum: červenec 2025
+Poslední aktualizace: September 2025
+Build: OK
+
+20. Licence
+Tento projekt je dostupný pod licencí MIT. Podrobnosti viz soubor LICENSE.
