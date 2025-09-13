@@ -1,5 +1,5 @@
 # vagrant-nginx-provisioning
-
+# Nasazení webového serveru pomocí Vagrant a Ansible
 ---
 ## Lokální testování Ansible playbooku ve Vagrant VM
 Tento návod popisuje postup, jak otestovat Ansible playbooky ve Vagrant virtuálním prostředí bez narušení funkční konfigurace používané v Codespace.
@@ -77,13 +77,13 @@ Pak můžeš testovat z hostitelského systému:
   ```
 
 ---
-## Poznámky
+## 6. Poznámky
 - Konfigurace pro Codespace zůstává nedotčena
 - Lokální inventář slouží pouze pro testování ve Vagrantu
 - Vault proměnné se načítají správně díky přiřazení `localhost` do skupiny `web`
 
 ---
-## Webová služba
+## 7. Webová služba
 Role webserver provádí:
 - Vytvoření uživatele `webapp`
 - Instalaci a konfiguraci NGINX
@@ -93,60 +93,61 @@ Role webserver provádí:
 - Ověření dostupnosti webu pomocí modulu `uri`
 
 ---
-## Konfigurace NGINX
-- Webový server NGINX je nakonfigurován pomocí šablony `nginx.conf.j2`
-- Obsah webu je uložen v `/opt/static-sites/index.html`
-- Soubor je generován pomocí Ansible šablony `index.html.j2` s proměnnými `welcome_message` a `admin_user`
-- Vlastníkem obsahu je uživatel `webapp`, přístup umožněn skupině `www-data`
-- Webová stránka je dostupná na portu `80` a ověřena pomocí `curl http://localhost`
-
-
-
+## 8. Konfigurace NGINX
+- Konfigurace pomocí šablony `nginx.conf.j2`
+- Obsah webu uložen v `/opt/static-sites/index.html`
+- Vlastníkem obsahu je `webapp`, přístup umožněn skupině `www-data`
+- Webová stránka dostupná na portu `80`, ověřena pomocí:
+  ```bash
+  curl http://localhost
+  ```
 
 ---
-## 🧠 Bonus
-- Diagnostika 403 chyb a oprava pomocí skupinových práv
+## 9. Bonus
+- Diagnostika chyb 403 a oprava pomocí skupinových práv
 - Vlastní konfigurace NGINX mimo výchozí šablonu
 - Testování v izolovaném prostředí Vagrant bez ovlivnění Codespace
-- Vše dokumentováno do README.md
+- Vše dokumentováno v README.md
 
+---
+## 10. Cíl projektu
+Provisioning webového serveru s NGINX pomocí Ansible v izolovaném prostředí Vagrant. Webová stránka je generována šablonou a dostupná na portu `80`.
 
-# Nasazení webového serveru pomocí Vagrant a Ansible
-
-## Cíl projektu
-Provisioning webového serveru s NGINX pomocí Ansible v izolovaném prostředí Vagrant. Webová stránka je generována šablonou a dostupná na portu 80.
-
-## Použité technologie
+---
+## 11. Použité technologie
 - Vagrant (virtuální prostředí)
 - Ansible (automatizace konfigurace)
 - Ubuntu 20.04 (hostovaný OS)
 - NGINX (webový server)
 
-## Kroky provisioning skriptu
-1. Vytvoření uživatele `webapp` se shellem `/bin/bash`
-2. Vytvoření složky `/opt/static-sites` s vlastníkem `webapp`
-3. Instalace a aktivace služby NGINX
-4. Nasazení vlastní konfigurace NGINX (`sites-available/static-site`)
-5. Aktivace konfigurace pomocí symlinku do `sites-enabled`
-6. Generování souboru `index.html` pomocí Ansible šablony `index.html.j2`
-7. Použití proměnných `welcome_message` a `admin_user` pro dynamický obsah
-8. Nastavení oprávnění pro přístup uživatele `www-data` ke složce `static-sites`
-9. Validace dostupnosti webu pomocí modulu `uri`
-10. Ověření výstupu pomocí `curl http://localhost`
+---
+## 12. Kroky provisioning skriptu
+- Vytvoření uživatele `webapp` se shellem `/bin/bash`
+- Vytvoření složky `/opt/static-sites` s vlastníkem `webapp`
+- Instalace a aktivace služby NGINX
+- Nasazení vlastní konfigurace NGINX (`sites-available/static-site`)
+- Aktivace konfigurace pomocí symlinku do `sites-enabled`
+- Generování souboru `index.html` pomocí šablony `index.html.j2`
+- Použití proměnných `welcome_message` a `admin_user`
+- Nastavení oprávnění pro přístup uživatele `www-data` ke složce `static-sites`
+- Validace dostupnosti webu pomocí modulu `uri`
+- Ověření výstupu pomocí `curl http://localhost`
 
-## Výsledek
-Webová stránka se úspěšně zobrazuje na portu 80 s obsahem generovaným Ansiblem. Vše je ověřeno lokálně ve Vagrantu.
+---
+## 13. Výsledek
+Webová stránka se úspěšně zobrazuje na portu `80` s obsahem generovaným pomocí Ansible. Vše je ověřeno lokálně ve Vagrantu.
 
-## Poznámky
+---
+## 14. Poznámky
 - Projekt je izolovaný od Codespace a hlavního GitHub repozitáře
 - Vhodné pro testování, výuku nebo demonstraci provisioning procesů
 
-9. Autor
-Projekt vypracovala Michaela Kučerová
+---
+## 15. Autor
+Projekt vypracovala [Michaela Kučerová](https://github.com/Miska296)
 Verze: 1.0
-Datum: červenec 2025
-Poslední aktualizace: September 2025
-Build: OK
+Datum: září 2025
 
-20. Licence
-Tento projekt je dostupný pod licencí MIT. Podrobnosti viz soubor LICENSE.
+---
+## 20. Licence
+Tento projekt je dostupný pod licencí MIT. Podrobnosti viz soubor [LICENSE](LICENSE).
