@@ -1,5 +1,0 @@
-- name: Provision webserver with NGINX
-  hosts: all
-  become: true
-  roles:
-    - webserver
