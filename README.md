@@ -105,9 +105,9 @@ Role webserver provádí:
 - Generování `index.html` pomocí šablony `index.html.j2` s proměnnými `welcome_message` a `admin_user`
 - Uložení obsahu do `/opt/static-sites`, vlastněného uživatelem `webapp`
 - Ověření dostupnosti webu pomocí modulu `uri`
-12. Konfigurace NGINX
+
 ---
-## 8. Konfigurace NGINX
+## 11. Konfigurace NGINX
 - Konfigurace pomocí šablony `nginx.conf.j2`
 - Obsah webu uložen v `/opt/static-sites/index.html`
 - Vlastníkem obsahu je `webapp`, přístup umožněn skupině `www-data`
@@ -116,7 +116,6 @@ Role webserver provádí:
   curl http://localhost
   ```
 
-13. Kroky provisioning skriptu
 ---
 ## 12. Kroky provisioning skriptu
 - Vytvoření uživatele `webapp` se shellem `/bin/bash`
@@ -129,38 +128,36 @@ Role webserver provádí:
 - Nastavení oprávnění pro přístup uživatele `www-data` ke složce `static-sites`
 - Validace dostupnosti webu pomocí modulu `uri`
 - Ověření výstupu pomocí `curl http://localhost`
-14. Bonus (diagnostika, izolace, vlastní 
-konfigurace)
+
 ---
-## 9. Bonus
-- Diagnostika chyb 403 a oprava pomocí skupinových práv
+## 13. Bonus
+- Diagnostika chyby 403 a oprava pomocí skupinových práv
 - Vlastní konfigurace NGINX mimo výchozí šablonu
 - Testování v izolovaném prostředí Vagrant bez ovlivnění Codespace
 - Vše dokumentováno v README.md
-🔹 Výsledky a závěr
-15. Výsledek
+
 ---
-## 13. Výsledek
+---
+# Výsledky a závěr
+## 14. Výsledek
 Webová stránka se úspěšně zobrazuje na portu `80` s obsahem generovaným pomocí Ansible. Vše je ověřeno lokálně ve Vagrantu.
-16. Poznámky (např. izolace od Codespace)
+
 ---
-## 6. Poznámky
+## 15. Poznámky
 - Konfigurace pro Codespace zůstává nedotčena
 - Lokální inventář slouží pouze pro testování ve Vagrantu
 - Vault proměnné se načítají správně díky přiřazení `localhost` do skupiny `web`
----
-## 14. Poznámky
 - Projekt je izolovaný od Codespace a hlavního GitHub repozitáře
 - Vhodné pro testování, výuku nebo demonstraci provisioning procesů
-17. Autor
+
 ---
-## 15. Autor
+## 16. Autor
 Projekt vypracovala [Michaela Kučerová](https://github.com/Miska296)  
 Verze: 1.0  
-Datum: září 2025  
-18. Licence
+Datum: září 2025
+
 ---
-## 16. Licence
+## 17. Licence
 Tento projekt je dostupný pod licencí MIT. Podrobnosti viz soubor [LICENSE](LICENSE).
 
 - Struktura projektu
