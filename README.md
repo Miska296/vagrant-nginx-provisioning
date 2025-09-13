@@ -46,9 +46,9 @@ Vytvoř soubor `/vagrant/inventory/hosts` s obsahem:
   localhost
   ```
 Tím zajistíš, že proměnné z `group_vars/web` se načtou i pro `localhost`.
-8. Ansible Vault
+
 ---
-## 2. Ansible Vault
+## 7. Ansible Vault
 Vault soubor se nachází v `group_vars/web/vault` a obsahuje proměnnou:
   ```yaml:
   webapp_password: tajneheslo123
@@ -57,22 +57,21 @@ Soubor je šifrován pomocí:
   ```bash
   ansible-vault create group_vars/web/vault
   ```
-Při spouštění playbooku je nutné zadat heslo:
+Při spuštění playbooku je nutné zadat heslo:
   ```bash
   ansible-playbook users-test.yml --ask-vault-pass -i /vagrant/inventory/hosts
   ```
 
-9. Testování vytvoření uživatele
 ---
-## 4. Testování vytvoření uživatele
+## 8. Testování vytvoření uživatele
 Po úspěšném spuštění playbooku ověř, že uživatel byl vytvořen:
   ```bash
   id webapp
   getent passwd webapp
   ```
-10. Testování webového serveru
+
 ---
-## 5. Testování webového serveru
+## 9. Testování webového serveru
 Pokud je součástí provisioning skriptu instalace NGINX:
 - Ověř, že běží:
   ```bash
@@ -94,10 +93,11 @@ Pak můžeš testovat z hostitelského systému:
   ```bash
   curl http://localhost:8080
   ```
-🔹 Technické detaily
-11. Webová služba
+
 ---
-## 7. Webová služba
+---
+# Technické detaily
+## 10. Webová služba
 Role webserver provádí:
 - Vytvoření uživatele `webapp`
 - Instalaci a konfiguraci NGINX
