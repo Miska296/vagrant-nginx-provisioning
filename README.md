@@ -1,12 +1,16 @@
 # vagrant-nginx-provisioning
-# 🛠 Lokální testování Ansible playbooku ve Vagrant VM
+
+---
+## Lokální testování Ansible playbooku ve Vagrant VM
 Tento návod popisuje postup, jak otestovat Ansible playbooky ve Vagrant virtuálním prostředí bez narušení funkční konfigurace používané v Codespace.
 
 ---
-## 📦 1. Příprava prostředí
-- Vagrant VM
-  - Spusť Vagrant VM pomocí `vagrant up`
-  - Připoj se do VM: `vagrant ssh`
+## 1. Příprava prostředí
+Spusť virtuální stroj pomocí Vagrantu:
+  ```bash
+  vagrant up
+  vagrant ssh
+  ```
 
 - Struktura projektu
 Ujisti se, že složka `/vagrant` obsahuje:
@@ -17,7 +21,7 @@ Ujisti se, že složka `/vagrant` obsahuje:
   - `inventory/hosts` — vlastní inventář pro testování ve Vagrantu
 
 ---
-## 🔐 2. Ansible Vault
+## 2. Ansible Vault
 Vault soubor se nachází v `group_vars/web/vault` a obsahuje proměnnou:
   ```yaml:
   webapp_password: tajneheslo123
@@ -32,7 +36,7 @@ Při spouštění playbooku je nutné zadat heslo:
   ```
 
 ---
-## 📁 3. Inventář pro Vagrant
+## 3. Inventář pro Vagrant
 Vytvoř soubor `/vagrant/inventory/hosts` s obsahem:
   ```ini
   [web]
@@ -41,7 +45,7 @@ Vytvoř soubor `/vagrant/inventory/hosts` s obsahem:
 Tím zajistíš, že proměnné z `group_vars/web` se načtou i pro `localhost`.
 
 ---
-## 👤 4. Testování vytvoření uživatele
+## 4. Testování vytvoření uživatele
 Po úspěšném spuštění playbooku ověř, že uživatel byl vytvořen:
   ```bash
   id webapp
@@ -49,7 +53,7 @@ Po úspěšném spuštění playbooku ověř, že uživatel byl vytvořen:
   ```
 
 ---
-## 🌐 5. Testování webového serveru
+## 5. Testování webového serveru
 Pokud je součástí provisioning skriptu instalace NGINX:
 - Ověř, že běží:
   ```bash
@@ -68,28 +72,28 @@ Pokud máš ve `Vagrantfile` přesměrování portu:
   config.vm.network "forwarded_port", guest: 80, host: 8080
   ```
 Pak můžeš testovat z hostitelského systému:
-  ```Kód
-  http://localhost:8080
+  ```bash
+  curl http://localhost:8080
   ```
 
 ---
-## ✅ Poznámky
+## Poznámky
 - Konfigurace pro Codespace zůstává nedotčena
 - Lokální inventář slouží pouze pro testování ve Vagrantu
 - Vault proměnné se načítají správně díky přiřazení `localhost` do skupiny `web`
 
 ---
 ## Webová služba
-Webová služba je nasazena pomocí role webserver, která:
-- Vytváří uživatele webapp
-- Instaluje a konfiguruje NGINX
-- Klonuje statický web z GitHubu
-- Generuje `index.html` pomocí šablony `index.html.j2` s proměnnými `welcome_message` a `admin_user`
-- Ukládá obsah do `/opt/static-sites`, vlastněného uživatelem `webapp`
-- Ověřuje dostupnost webu pomocí modulu `uri`
+Role webserver provádí:
+- Vytvoření uživatele `webapp`
+- Instalaci a konfiguraci NGINX
+- Klonování statického webu z GitHubu
+- Generování `index.html` pomocí šablony `index.html.j2` s proměnnými `welcome_message` a `admin_user`
+- Uložení obsahu do `/opt/static-sites`, vlastněného uživatelem `webapp`
+- Ověření dostupnosti webu pomocí modulu `uri`
 
 ---
-## Webová služba
+## Konfigurace NGINX
 - Webový server NGINX je nakonfigurován pomocí šablony `nginx.conf.j2`
 - Obsah webu je uložen v `/opt/static-sites/index.html`
 - Soubor je generován pomocí Ansible šablony `index.html.j2` s proměnnými `welcome_message` a `admin_user`
