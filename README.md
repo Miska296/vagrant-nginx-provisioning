@@ -64,7 +64,7 @@ Tím zajistíš, že:
 - Proměnné z `group_vars/web` se načtou i pro `localhost`
 - Ansible nebude používat SSH, ale lokální připojení (`-c local`)
 - Vault proměnné budou dostupné pro roli `webserver`
-- Testování proběhne přímo ve Vagrant VM bez nutnosti vzdáleného připojení
+- Testování proběhne přímo ve Vagrant VM bez nutnosti vzdáleného připojení  
 Soubor `inventory/hosts` je klíčový pro správné fungování playbooku a jeho oddělení od Codespace konfigurace.
 
 ---
