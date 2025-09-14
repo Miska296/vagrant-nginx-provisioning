@@ -183,16 +183,16 @@ Tím je potvrzena funkčnost provisioning skriptu v izolovaném prostředí.
 ## 8. Spuštění playbooku v Codespace
 Pro lokální testování v Codespace nebo Vagrant VM stačí spustit:
   ```bash
-  ansible-playbook playbook.yml --ask-vault-pass -i inventory/hosts -c local
+  ansible-playbook playbook.yml --ask-vault-pass -i inventory/hosts
   ```
 Tento příkaz:
-- Načte inventář z `inventory/hosts`
+- Načte inventář z `inventory/hosts`, který obsahuje `ansible_connection=local`
 - Použije Vault heslo pro dešifrování proměnných
 - Spustí úlohy přímo na lokálním stroji bez SSH
 - Automaticky najde roli `webserver` ve složce `roles/`
 - Nevyžaduje žádný `provision.sh` skript  
 
-Po úspěšném běhu se webová stránka zobrazí na portu `80`. V Codespace lze port otevřít jako veřejný a získat URL ve formátu: https://upgraded-space-trout-7vxgjp7x7pv53wpg-80.app.github.dev/
+Po úspěšném běhu se webová stránka zobrazí na portu `80`. V Codespace lze port otevřít jako veřejný a získat URL ve formátu např.: https://upgraded-space-trout-7vxgjp7x7pv53wpg-80.app.github.dev/
 
 Zobrazený obsah:
   ```html
@@ -201,7 +201,7 @@ Zobrazený obsah:
   ```
 
 ---
-## 15. Poznámky
+## 9. Poznámky
 - Konfigurace pro Codespace zůstává nedotčena
 - Lokální inventář slouží pouze pro testování ve Vagrantu
 - Vault proměnné se načítají správně díky přiřazení `localhost` do skupiny `web`
@@ -209,13 +209,11 @@ Zobrazený obsah:
 - Vhodné pro testování, výuku nebo demonstraci provisioning procesů
 
 ---
-## 16. Autor
+## 10. Autor
 Projekt vypracovala [Michaela Kučerová](https://github.com/Miska296)  
 Verze: 1.0  
 Datum: září 2025
 
 ---
-## 17. Licence
+## 11. Licence
 Tento projekt je dostupný pod licencí MIT. Podrobnosti viz soubor [LICENSE](LICENSE).
-
-- Struktura projektu
