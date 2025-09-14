@@ -1,10 +1,11 @@
 # Vagrant NGINX Provisioning
 
 ---
----
 # Úvodní část
 ## 1. Nasazení webového serveru pomocí Vagrant a Ansible
 Projekt slouží k otestování nasazení webového serveru pomocí Ansible v izolovaném prostředí Vagrant. Umožňuje bezpečné testování playbooků bez ovlivnění hlavního repozitáře nebo Codespace konfigurace.
+
+Tento projekt vychází z předchozího repozitáře [ansible-web-wm](https://github.com/Miska296/ansible-web-wm), který sloužil jako základní šablona pro roli `webserver` a strukturu playbooku.
 
 ---
 ## 2. Cíl projektu
@@ -19,38 +20,57 @@ Provisioning webového serveru s NGINX pomocí Ansible v lokálním prostředí 
 - NGINX (webový server)
 
 ---
+## 4. Struktura projektu
+kořenová složka `vagrant-nginx-provisioning/`:
+- group_vars/web/vault
+- inventory/hosts
+- roles/webserver/handlers/main.yml
+- roles/webserver/tasks/main.yml
+- roles/webserver/templates/index.html.j2
+- roles/webserver/templates/nginx.conf.j2
+- roles/webserver/vars/main.yml
+- playbook.yml
+- Vagrantfile
+- LICENSE
+- README.md
+
+---
 ---
 # Testovací scénář
 ## 4. Lokální testování Ansible playbooku ve Vagrant VM
-Tento návod popisuje postup, jak otestovat Ansible playbooky ve Vagrant virtuálním prostředí bez narušení funkční konfigurace používané v Codespace.
+Tento návod popisuje postup, jak otestovat Ansible playbooky ve Vagrant virtuálním prostředí. Testování probíhá izolovaně, bez narušení funkční konfigurace používané v Codespace.
 
 ---
-## 5. Příprava prostředí
+### 5.1 Příprava prostředí
 Spusť virtuální stroj pomocí Vagrantu:
   ```bash
   vagrant up
   vagrant ssh
   ```
 Ujisti se, že složka `/vagrant` obsahuje:
-  - `users-test.yml` — testovací playbook
-  - `roles/users/tasks/main.yml` — role pro vytvoření uživatele
+  - `playbook.yml` — hlavní playbook
+  - `roles/webserver/` — role pro konfiguraci webserveru
   - `group_vars/web/vault` — šifrovaný soubor s heslem
-  - `provision.sh` — provisioning skript
-  - `inventory/hosts` — vlastní inventář pro testování ve Vagrantu
+  - `inventory/hosts` — vlastní inventář pro testování
 
 ---
-## 6. Inventář pro Vagrant
-Vytvoř soubor `/vagrant/inventory/hosts` s obsahem:
+### 5.2 Inventář pro Vagrant
+Vytvořen soubor `inventory/hosts` s obsahem:
   ```ini
   [web]
-  localhost
+  localhost ansible_connection=local
   ```
-Tím zajistíš, že proměnné z `group_vars/web` se načtou i pro `localhost`.
+Tím zajistíš, že:
+- Proměnné z `group_vars/web` se načtou i pro `localhost`
+- Ansible nebude používat SSH, ale lokální připojení (`-c local`)
+- Vault proměnné budou dostupné pro roli `webserver`
+- Testování proběhne přímo ve Vagrant VM bez nutnosti vzdáleného připojení
+Soubor `inventory/hosts` je klíčový pro správné fungování playbooku a jeho oddělení od Codespace konfigurace.
 
 ---
 ## 7. Ansible Vault
 Vault soubor se nachází v `group_vars/web/vault` a obsahuje proměnnou:
-  ```yaml:
+  ```yaml
   webapp_password: tajneheslo123
   ```
 Soubor je šifrován pomocí:
@@ -141,6 +161,42 @@ Role webserver provádí:
 # Výsledky a závěr
 ## 14. Výsledek
 Webová stránka se úspěšně zobrazuje na portu `80` s obsahem generovaným pomocí Ansible. Vše je ověřeno lokálně ve Vagrantu.
+
+---
+## 🧪 Testování a ověření
+Testovací běh proběhl ve Vagrant VM dne **12. září 2025**.  
+✅ Výsledky:
+- Playbook `playbook.yml` proběhl bez chyb (`ok=16`, `changed=12`, `failed=0`)
+- Uživatel `webapp` byl úspěšně vytvořen
+- Webserver NGINX byl nainstalován, nakonfigurován a restartován
+- Webová stránka byla vygenerována pomocí šablony `index.html.j2`
+- Výstup `curl http://localhost` obsahoval očekávaný HTML obsah:
+  ```html
+  <h1>Hello from Ansible-managed NGINX!</h1>
+  <p>Server configured automatically by michaela using Ansible</p>
+  ```
+Tím je potvrzena funkčnost provisioning skriptu v izolovaném prostředí.
+
+---
+## ▶️ Spuštění playbooku
+Pro lokální testování v Codespace nebo Vagrant VM stačí spustit:
+  ```bash
+  ansible-playbook playbook.yml --ask-vault-pass -i inventory/hosts -c local
+  ```
+Tento příkaz:
+- Načte inventář z `inventory/hosts`
+- Použije Vault heslo pro dešifrování proměnných
+- Spustí úlohy přímo na lokálním stroji bez SSH
+- Automaticky najde roli `webserver` ve složce `roles/`
+- Nevyžaduje žádný `provision.sh` skript  
+
+Po úspěšném běhu se webová stránka zobrazí na portu `80`. V Codespace lze port otevřít jako veřejný a získat URL ve formátu: https://upgraded-space-trout-7vxgjp7x7pv53wpg-80.app.github.dev/
+
+Zobrazený obsah:
+  ```html
+  <h1>Hello from Ansible-managed NGINX!</h1>
+  <p>Server configured automatically by michaela using Ansible</p>
+  ```
 
 ---
 ## 15. Poznámky
