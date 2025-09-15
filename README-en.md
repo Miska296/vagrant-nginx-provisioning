@@ -99,103 +99,103 @@ Expected output:
 The test was successful - the user `webapp` was created with a home directory and shell `/bin/bash`.
 
 ---
-### 5.5 Testování webového serveru
-Pokud je součástí provisioning skriptu instalace NGINX:
-- Ověř, že NGINX běží:
+### 5.5 Testing the web server
+If the installation of NGINX is part of the provisioning script:
+- Check that NGINX is running:
   ```bash
   sudo systemctl status nginx
   ```
-- Pokud neběží, spusť ho:
+- If it is not running, start it:
   ```bash
   sudo systemctl start nginx
   ```
-- Testuj dostupnost webu:
-> **Poznámka:** V prostředí Codespace není dostupný `systemd`, takže příkaz `sudo systemctl status nginx` nemusí fungovat. Místo toho lze použít:
+- Test the availability of the website:
+> **Note:** In the Codespace environment, `systemd` is not available, so the command `sudo systemctl status nginx` may not work. Instead, you can use:
   ```bash
   curl http://localhost
   ```
-Pokud máš ve `Vagrantfile` přesměrování portu:
+If you have port forwarding in your `Vagrantfile`:
   ```ruby
   config.vm.network "forwarded_port", guest: 80, host: 8080
   ```
-Pak můžeš testovat z hostitelského systému:
+Then you can test from the host system:
   ```bash
   curl http://localhost:8080
   ```
 
 ---
-## 6. Technické detaily
-### 6.1 Webová služba
-Role `webserver` provádí následující kroky:
-- Vytvoření uživatele `webapp` se shellem `/bin/bash`
-- Instalaci a konfiguraci webserveru NGINX
-- Generování statické webové stránky pomocí šablony `index.html.j2` s proměnnými `welcome_message` a `admin_user`
-- Uložení souboru `index.html` do složky `/opt/static-sites`, vlastněné uživatelem `webapp`
-- Nastavení oprávnění pro přístup skupiny `www-data`
-- Ověření dostupnosti webové stránky pomocí modulu `uri`
+## 6. Technical details
+### 6.1 Web service
+The role `webserver` performs the following steps:
+- Creating the user `webapp` with the shell `/bin/bash`
+- Installation and configuration of the NGINX web server
+- Generating a static web page using the template `index.html.j2` with variables `welcome_message` and `admin_user`
+- Saving the file `index.html` to the folder `/opt/static-sites`, owned by the user `webapp`
+- Setting permissions for the `www-data` group access
+- Checking the availability of a website using the `uri` module
 
 ---
-### 6.2 Konfigurace NGINX
-- Konfigurace pomocí šablony `nginx.conf.j2`
-- Obsah webu uložen v `/opt/static-sites/index.html`
-- Vlastníkem obsahu je `webapp`, přístup umožněn skupině `www-data`
-- Webová stránka dostupná na portu `80`, ověřena pomocí:
+### 6.2 NGINX Configuration
+- Configuration using the template `nginx.conf.j2`
+- The content of the website is stored in `/opt/static-sites/index.html`
+- The owner of the content is `webapp`, access granted to the group `www-data`
+- The website available on port `80`, verified using:
   ```bash
   curl http://localhost
   ```
 
 ---
-### 6.3 Kroky provisioning skriptu
-- Nasazení vlastní konfigurace NGINX (`sites-available/static-site`)
-- Aktivace konfigurace pomocí symlinku do `sites-enabled`
-- Nastavení oprávnění pro přístup uživatele `www-data` ke složce `static-sites`
-- Validace dostupnosti webu pomocí modulu `uri`
-> Poznámka: Tyto kroky jsou již podrobně popsány v sekcích 6.1 a 6.2 výše. Tato část slouží jako stručné shrnutí provisioning procesu.
+### 6.3 Steps of the provisioning script
+- Deployment of the custom NGINX configuration (`sites-available/static-site`)
+- Activating the configuration using a symlink to `sites-enabled`
+- Setting permissions for user `www-data` access to the `static-sites` folder
+- Validation of website availability using the `uri` module
+> Note: These steps are already described in detail in sections 6.1 and 6.2 above. This section serves as a brief summary of the provisioning process.
 
 ---
 ---
-# Výsledky a ověření
-## 7. Výsledek
-Webová stránka se úspěšně zobrazuje na portu `80` s obsahem generovaným pomocí Ansible. Funkčnost byla ověřena lokálně ve Vagrant VM.
+# Results and verification
+## 7. Result
+The website is successfully displayed on port `80` with content generated using Ansible. Functionality was verified locally in a Vagrant VM.
 
 ---
-### 7.1 Testování a ověření
-Testovací běh proběhl dne **12. září 2025**.  
-Výsledky:
-- Playbook `playbook.yml` proběhl bez chyb (`ok=16`, `changed=12`, `failed=0`)
-- Uživatel `webapp` byl úspěšně vytvořen
-- Webserver NGINX byl nainstalován, nakonfigurován a restartován
-- Webová stránka byla vygenerována pomocí šablony `index.html.j2`
-- Výstup `curl http://localhost` obsahoval očekávaný HTML obsah:
+### 7.1 Testing and verification
+The test run took place on **September 12, 2025**.  
+Results:
+- The playbook `playbook.yml` ran without errors (`ok=16`, `changed=12`, `failed=0`)
+- The user `webapp` has been successfully created
+- The NGINX web server has been installed, configured, and restarted
+- The webpage was generated using the template `index.html.j2`
+- The output `curl http://localhost` contained the expected HTML content:
   ```html
   <h1>Hello from Ansible-managed NGINX!</h1>
   <p>Server configured automatically by michaela using Ansible</p>
   ```
-Tím je potvrzena funkčnost provisioning skriptu v izolovaném prostředí.
+This confirms the functionality of the provisioning script in an isolated environment.
 
 ---
-### 7.2 Doplňkové poznámky a tipy
-- Řešení chyby 403 pomocí správného nastavení skupinových práv (`www-data`)
-- Vlastní konfigurace NGINX mimo výchozí šablonu (`nginx.conf.j2`)
-- Testování v izolovaném prostředí Vagrant bez ovlivnění Codespace
-- Všechny kroky a výsledky jsou dokumentovány v tomto `README.md`
+### 7.2 Supplementary notes and tips
+- Resolve a 403 error by setting group rights correctly ('www-data')
+- Custom NGINX configuration outside of the default template (`nginx.conf.j2`)
+- Testing in an isolated Vagrant environment without affecting Codespace
+- All steps and results are documented in this `README.md`
 
 ---
-## 8. Spuštění playbooku v Codespace
-Pro lokální testování v Codespace nebo Vagrant VM stačí spustit:
+## 8. Launching the playbook in Codespace
+For local testing in Codespace or Vagrant VM, just run:
   ```bash
   ansible-playbook playbook.yml --ask-vault-pass -i inventory/hosts
   ```
-Tento příkaz:
-- Načte inventář z `inventory/hosts`, který obsahuje `ansible_connection=local`
-- Použije Vault heslo pro dešifrování proměnných
-- Spustí úlohy přímo na lokálním stroji bez SSH
-- Automaticky najde roli `webserver` ve složce `roles/`
-- Nevyžaduje žádný `provision.sh` skript  
+This command:
+- Loads the inventory from `inventory/hosts`, which contains `ansible_connection=local`
+- The Vault will use the password to decrypt the variables
+- It runs tasks directly on the local machine without SSH
+- It will automatically find the role `webserver` in the `roles/` folder
+- Does not require any `provision.sh` script 
 
-Po úspěšném běhu se webová stránka zobrazí na portu `80`. V Codespace lze port otevřít jako veřejný a získat URL ve formátu např.: https://upgraded-space-trout-7vxgjp7x7pv53wpg-80.app.github.dev/
+After a successful run, the webpage will appear on port `80`. In Codespace, the port can be opened publicly and a URL in the format e.g.: https://upgraded-space-trout-7vxgjp7x7pv53wpg-80.app.github.dev/
 
-Zobrazený obsah:
+Displayed content:
   ```html
   <h1>Hello from Ansible-managed NGINX!</h1>
   <p>Server configured automatically by michaela using Ansible</p>
