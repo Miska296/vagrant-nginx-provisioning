@@ -1,28 +1,28 @@
 # Vagrant NGINX Provisioning
 
 ---
-# Úvodní část
-## 1. Nasazení webového serveru pomocí Vagrant a Ansible
-Projekt slouží k otestování nasazení webového serveru pomocí Ansible v izolovaném prostředí Vagrant. Umožňuje bezpečné testování playbooků bez ovlivnění hlavního repozitáře nebo Codespace konfigurace.
+# Introduction part
+## 1. Deploying a web server using Vagrant and Ansible
+The project serves to test the deployment of a web server using Ansible in an isolated Vagrant environment. It allows for safe testing of playbooks without affecting the main repository or Codespace configuration.
 
-Tento projekt vychází z předchozího repozitáře [ansible-web-wm](https://github.com/Miska296/ansible-web-wm), který sloužil jako základní šablona pro roli `webserver` a strukturu playbooku.
-> Tento projekt je dostupný také v anglické verzi: [README-en.md](README-en.md)
-
----
-## 2. Cíl projektu
-Provisioning webového serveru s NGINX pomocí Ansible v lokálním prostředí Vagrant. Webová stránka je generována šablonou a dostupná na portu `80`.
+This project is based on a previous repository [ansible-web-wm](https://github.com/Miska296/ansible-web-wm), which served as a basic template for the `webserver` role and the structure of the playbook.
+> This project is also available in the Czech version: [README-en.md](README-en.md)
 
 ---
-## 3. Použité technologie
-- Vagrant (virtuální prostředí)
-- VirtualBox (poskytovatel VM)
-- Ansible (automatizace konfigurace)
-- Ubuntu 20.04 (hostovaný OS)
-- NGINX (webový server)
+## 2. Project goal
+Provisioning a web server with NGINX using Ansible in a local Vagrant environment. The web page is generated from a template and is accessible on port `80`.
 
 ---
-## 4. Struktura projektu
-kořenová složka `vagrant-nginx-provisioning/`:
+## 3. Used technologies
+- Vagrant (virtual environment)
+- VirtualBox (VM provider)
+- Ansible (configuration automation)
+- Ubuntu 20.04 (hosted OS)
+- NGINX (web server)
+
+---
+## 4. Project structure
+root component `vagrant-nginx-provisioning/`:
 - group_vars/web/vault
 - inventory/hosts
 - roles/webserver/handlers/main.yml
@@ -37,66 +37,66 @@ kořenová složka `vagrant-nginx-provisioning/`:
 
 ---
 ---
-# Testovací scénář
-## 5. Lokální testování Ansible playbooku ve Vagrant VM
-Tento návod popisuje postup, jak otestovat Ansible playbooky ve Vagrant virtuálním prostředí. Testování probíhá izolovaně, bez narušení funkční konfigurace používané v Codespace.
+# Testing scenario
+## 5. Local testing of Ansible playbook in Vagrant VM
+This guide describes the procedure for testing Ansible playbooks in a Vagrant virtual environment. The testing is carried out in isolation, without disrupting the functional configuration used in Codespace.
 
 ---
-### 5.1 Příprava prostředí
-Spusť virtuální stroj pomocí Vagrantu:
+### 5.1 Preparation of the environment
+Start the virtual machine using Vagrant:
   ```bash
   vagrant up
   vagrant ssh
   ```
-Ujisti se, že složka `/vagrant` obsahuje:
-  - `playbook.yml` — hlavní playbook
-  - `roles/webserver/` — role pro konfiguraci webserveru
-  - `group_vars/web/vault` — šifrovaný soubor s heslem
-  - `inventory/hosts` — vlastní inventář pro testování
+Make sure that the `/vagrant` folder contains:
+  - `playbook.yml` — main playbook
+  - `roles/webserver/` — role for web server configuration
+  - `group_vars/web/vault` — encrypted file with a password
+  - `inventory/hosts` — own inventory for testing
 
 ---
-### 5.2 Inventář pro Vagrant
-Vytvořen soubor `inventory/hosts` s obsahem:
+### 5.2 Inventory for Vagrant
+File `inventory/hosts` created with the content:
   ```ini
   [web]
   localhost ansible_connection=local
   ```
-Tím zajistíš, že:
-- Proměnné z `group_vars/web` se načtou i pro `localhost`
-- Ansible nebude používat SSH, ale lokální připojení (`-c local`)
-- Vault proměnné budou dostupné pro roli `webserver`
-- Testování proběhne přímo ve Vagrant VM bez nutnosti vzdáleného připojení  
-Soubor `inventory/hosts` je klíčový pro správné fungování playbooku a jeho oddělení od Codespace konfigurace.
+This ensures that:
+- Variables from `group_vars/web` will be loaded even for `localhost`.
+- Ansible will not use SSH, but local connection (`-c local`)
+- The variables vault will be available for the `webserver` role.
+- Testing will take place directly in the Vagrant VM without the need for remote connection  
+The file `inventory/hosts` is key for the proper functioning of the playbook and its separation from the Codespace configuration.
 
 ---
 ### 5.3 Ansible Vault
-Vault soubor se nachází v `group_vars/web/vault` a obsahuje proměnnou:
+The vault file is located in `group_vars/web/vault` and contains the variable:
   ```yaml
   webapp_password: tajneheslo123
   ```
-Soubor je šifrován pomocí:
+The file is encrypted using:
   ```bash
   ansible-vault create group_vars/web/vault
   ```
-Při spuštění playbooku je nutné zadat heslo:
+When launching the playbook, it is necessary to enter the password:
   ```bash
   ansible-playbook playbook.yml --ask-vault-pass -i inventory/hosts
   ```
-Díky nastavení `ansible_connection=local` v inventáři není nutné přidávat parametr `-c local`.
+Thanks to the setting `ansible_connection=local` in the inventory, there is no need to add the `-c local` parameter.
 
 ---
-### 5.4 Testování vytvoření uživatele
-Po úspěšném spuštění playbooku ověř, že uživatel `webapp` byl vytvořen:
+### 5.4 Testing user creation
+After successfully launching the playbook, verify that the user `webapp` has been created:
   ```bash
   id webapp
   getent passwd webapp
   ```
-Očekávaný výstup:
+Expected output:
   ```text
   uid=1001(webapp) gid=1002(webapp) groups=1002(webapp)
   webapp:x:1001:1002::/home/webapp:/bin/bash
   ```
-Test proběhl úspěšně – uživatel `webapp` byl vytvořen s domovským adresářem a shellem `/bin/bash`.
+The test was successful - the user `webapp` was created with a home directory and shell `/bin/bash`.
 
 ---
 ### 5.5 Testování webového serveru
