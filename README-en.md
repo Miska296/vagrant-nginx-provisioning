@@ -6,7 +6,7 @@
 The project serves to test the deployment of a web server using Ansible in an isolated Vagrant environment. It allows for safe testing of playbooks without affecting the main repository or Codespace configuration.
 
 This project is based on a previous repository [ansible-web-wm](https://github.com/Miska296/ansible-web-wm), which served as a basic template for the `webserver` role and the structure of the playbook.
-> This project is also available in the Czech version: [README-en.md](README-en.md)
+> This project is also available in the Czech version: [README.md](README.md)
 
 ---
 ## 2. Project goal
