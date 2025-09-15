@@ -202,19 +202,19 @@ Displayed content:
   ```
 
 ---
-## 9. Poznámky
-- Konfigurace pro Codespace zůstává nedotčena
-- Lokální inventář slouží pouze pro testování ve Vagrantu
-- Vault proměnné se načítají správně díky přiřazení `localhost` do skupiny `web`
-- Projekt je izolovaný od Codespace a hlavního GitHub repozitáře
-- Vhodné pro testování, výuku nebo demonstraci provisioning procesů
+## 9. Notes
+- The configuration for Codespace remains unchanged
+- The local inventory is only used for testing in Vagrant
+- The vault variables are loaded correctly thanks to the assignment of `localhost` to the `web` group
+- The project is isolated from Codespace and the main GitHub repository
+- Suitable for testing, teaching or demonstrating provisioning processes
 
 ---
-## 10. Autor
-Projekt vypracovala [Michaela Kučerová](https://github.com/Miska296)  
-Verze: 1.0  
-Datum: září 2025
+## 10. Author
+The project was prepared by [Michaela Kučerová](https://github.com/Miska296)  
+Version: 1.0  
+Date: September 2025
 
 ---
-## 11. Licence
-Tento projekt je dostupný pod licencí MIT. Podrobnosti viz soubor [LICENSE](LICENSE).
+## 11. License
+This project is available under the MIT license. Details see the file [LICENSE](LICENSE).
