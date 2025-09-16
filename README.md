@@ -34,6 +34,7 @@ kořenová složka `vagrant-nginx-provisioning/`:
 - Vagrantfile
 - LICENSE
 - README.md
+- README-en.md
 
 ---
 ---
