@@ -1,5 +1,10 @@
 # Vagrant NGINX Provisioning
 
+![MIT License](https://img.shields.io/badge/license-MIT-green.svg)
+![Build](https://img.shields.io/badge/build-OK-brightgreen)
+
+Automatizované nasazení webového serveru pomocí Vagrantu a shell skriptu.
+
 ---
 # Úvodní část
 ## 1. Nasazení webového serveru pomocí Vagrant a Ansible
@@ -13,9 +18,9 @@ Tento projekt vychází z předchozího repozitáře [ansible-web-wm](https://gi
 Provisioning webového serveru s NGINX pomocí Ansible v lokálním prostředí Vagrant. Webová stránka je generována šablonou a dostupná na portu `80`.
 
 ---
-## 3. Použité technologie
-- Vagrant (virtuální prostředí)
-- VirtualBox (poskytovatel VM)
+## 3. Požadavky
+- [Vagrant](https://www.vagrantup.com/) (virtuální prostředí)
+- [VirtualBox](https://www.virtualbox.org/) (poskytovatel VM)
 - Ansible (automatizace konfigurace)
 - Ubuntu 20.04 (hostovaný OS)
 - NGINX (webový server)
