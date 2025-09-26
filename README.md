@@ -20,11 +20,19 @@ Provisioning webového serveru s NGINX pomocí Ansible v lokálním prostředí 
 ---
 ## 3. Požadavky
 Než projekt spustíte, ujistěte se, že máte nainstalováno:
-- [Vagrant](https://www.vagrantup.com/) (virtuální prostředí)
-- [VirtualBox](https://www.virtualbox.org/) (poskytovatel VM)
-- Ansible (automatizace konfigurace)
+- [Vagrant](https://www.vagrantup.com/downloads) (virtuální prostředí)
+- [VirtualBox](https://www.virtualbox.org/wiki/Downloads) (poskytovatel VM)
+- [Ansible](https://docs.ansible.com/) (automatizace konfigurace)
 - Ubuntu 20.04 (hostovaný OS)
 - NGINX (webový server)
+
+---
+## 🚀 Jak spustit projekt
+```bash
+git clone https://github.com/Miska296/vagrant-nginx-provisioning.git
+cd vagrant-nginx-provisioning
+vagrant up
+```
 
 ---
 ## 4. Struktura projektu
@@ -55,7 +63,7 @@ Spusť virtuální stroj pomocí Vagrantu:
   vagrant up
   vagrant ssh
   ```
-Ujisti se, že složka `/vagrant` obsahuje:
+Ujisti se, že složka `/vagrant-nginx-provisioning` obsahuje:
   - `playbook.yml` — hlavní playbook
   - `roles/webserver/` — role pro konfiguraci webserveru
   - `group_vars/web/vault` — šifrovaný soubor s heslem
