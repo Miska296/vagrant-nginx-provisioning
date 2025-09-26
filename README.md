@@ -19,6 +19,7 @@ Provisioning webového serveru s NGINX pomocí Ansible v lokálním prostředí 
 
 ---
 ## 3. Požadavky
+Než projekt spustíte, ujistěte se, že máte nainstalováno:
 - [Vagrant](https://www.vagrantup.com/) (virtuální prostředí)
 - [VirtualBox](https://www.virtualbox.org/) (poskytovatel VM)
 - Ansible (automatizace konfigurace)
@@ -59,6 +60,15 @@ Ujisti se, že složka `/vagrant` obsahuje:
   - `roles/webserver/` — role pro konfiguraci webserveru
   - `group_vars/web/vault` — šifrovaný soubor s heslem
   - `inventory/hosts` — vlastní inventář pro testování
+
+## 🚀 Jak spustit projekt
+```bash
+git clone https://github.com/Miska296/vagrant-nginx-provisioning.git
+cd vagrant-nginx-provisioning
+vagrant up
+```
+Po dokončení se vytvoří virtuální stroj s nainstalovaným NGINX serverem. Webová stránka bude dostupná na adrese:
+http://localhost:8080
 
 ---
 ### 5.2 Inventář pro Vagrant
@@ -129,6 +139,42 @@ Pak můžeš testovat z hostitelského systému:
   curl http://localhost:8080
   ```
 
+## Vylepšení provision.sh
+Můžeme přidat kontrolu, jestli je NGINX už nainstalovaný:
+```bash
+if ! command -v nginx &> /dev/null; then
+  echo "Installing NGINX..."
+  apt-get update
+  apt-get install -y nginx
+else
+  echo "NGINX is already installed."
+fi
+```
+
+## Přidání testovací stránky
+Součástí projektu je jednoduchý soubor index.html, který se zobrazí po spuštění.  
+Vytvoř soubor index.html s jednoduchým obsahem:
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Vagrant NGINX</title>
+</head>
+<body>
+  <h1>Hello from Vagrant NGINX provisioning!</h1>
+</body>
+</html>
+```
+A uprav provision.sh, aby ho nakopíroval do /var/www/html:
+```bash
+cp /vagrant/index.html /var/www/html/index.html
+```
+
+🛠 Další kroky
+Přidat logování do provision.sh.
+Přidat další komponenty (např. firewall, fail2ban).
+Vytvořit GitHub Pages dokumentaci.
+
 ---
 ## 6. Technické detaily
 ### 6.1 Webová služba
@@ -162,7 +208,15 @@ Role `webserver` provádí následující kroky:
 ---
 # Výsledky a ověření
 ## 7. Výsledek
+Po spuštění se otevře virtuální stroj s nainstalovaným NGINX. Webová stránka bude dostupná na `http://localhost:8080`.
 Webová stránka se úspěšně zobrazuje na portu `80` s obsahem generovaným pomocí Ansible. Funkčnost byla ověřena lokálně ve Vagrant VM.
+
+🌐 Co projekt dělá
+- Vytvoří Ubuntu virtuální stroj pomocí Vagrantu.
+- Spustí provision.sh, který:
+  - Nainstaluje NGINX.
+  - Zkopíruje testovací HTML stránku do /var/www/html.
+  - Spustí službu NGINX.
 
 ---
 ### 7.1 Testování a ověření
