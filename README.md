@@ -200,20 +200,20 @@ Tím je potvrzena funkčnost provisioning skriptu v izolovaném prostředí.
 - Testování v izolovaném prostředí Vagrant
 - Projekt je oddělený od Codespace konfigurace
 
----------------
+---
 ## 10. Spuštění playbooku v Codespace
-Pro lokální testování v Codespace nebo Vagrant VM stačí spustit:
+Pro lokální testování v prostředí Codespace nebo Vagrant VM spusť následující příkaz:
   ```bash
   ansible-playbook playbook.yml --ask-vault-pass -i inventory/hosts
   ```
-Tento příkaz:
-- Načte inventář z `inventory/hosts`, který obsahuje `ansible_connection=local`
-- Použije Vault heslo pro dešifrování proměnných
-- Spustí úlohy přímo na lokálním stroji bez SSH
-- Automaticky najde roli `webserver` ve složce `roles/`
-- Nevyžaduje žádný `provision.sh` skript  
+Tento příkaz provede:
+- Načtení inventáře z `inventory/hosts`, který obsahuje `ansible_connection=local`
+- Použití Vault hesla pro dešifrování chráněných proměnných
+- Spuštění úloh přímo na lokálním stroji bez potřeby SSH
+- Automatické nalezení role `webserver` ve složce `roles/`
+- Není potřeba žádný skript `provision.sh`  
 
-Po úspěšném běhu se webová stránka zobrazí na portu `80`. V Codespace lze port otevřít jako veřejný a získat URL ve formátu např.: https://upgraded-space-trout-7vxgjp7x7pv53wpg-80.app.github.dev/
+Po úspěšném dokončení se webová stránka zobrazí na portu `80`. V Codespace lze port otevřít jako veřejný a získat URL ve formátu např.: `https://upgraded-space-trout-7vxgjp7x7pv53wpg-80.app.github.dev/`
 
 Zobrazený obsah:
   ```html
@@ -222,64 +222,57 @@ Zobrazený obsah:
   ```
 
 ---
-## 9. Poznámky
-- Konfigurace pro Codespace zůstává nedotčena
+## 11. Poznámky
+- Konfigurace pro Codespace zůstává nezměněna
 - Lokální inventář slouží pouze pro testování ve Vagrantu
 - Vault proměnné se načítají správně díky přiřazení `localhost` do skupiny `web`
-- Projekt je izolovaný od Codespace a hlavního GitHub repozitáře
+- Projekt je izolovaný od Codespace i hlavního GitHub repozitáře
 - Vhodné pro testování, výuku nebo demonstraci provisioning procesů
 
 ---
-## 🛠 Doporučená vylepšení
-### Vylepšení `provision.sh`
-...
-## Vylepšení provision.sh
-Můžeme přidat kontrolu, jestli je NGINX už nainstalovaný:
-```bash
-if ! command -v nginx &> /dev/null; then
-  echo "Installing NGINX..."
-  apt-get update
-  apt-get install -y nginx
-else
-  echo "NGINX is already installed."
-fi
-```
+## 12 Doporučená vylepšení
+### 12.1 Vylepšení `provision.sh`
+Doporučujeme přidat kontrolu, zda je NGINX již nainstalovaný:
+  ```bash
+  if ! command -v nginx &> /dev/null; then
+    echo "Installing NGINX..."
+    apt-get update
+    apt-get install -y nginx
+  else
+    echo "NGINX is already installed."
+  fi
+  ```
 
-### Přidání testovací stránky
-...
-## Přidání testovací stránky
-Součástí projektu je jednoduchý soubor index.html, který se zobrazí po spuštění.  
-Vytvoř soubor index.html s jednoduchým obsahem:
-```html
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Vagrant NGINX</title>
-</head>
-<body>
-  <h1>Hello from Vagrant NGINX provisioning!</h1>
-</body>
-</html>
-```
-A uprav provision.sh, aby ho nakopíroval do /var/www/html:
-```bash
-cp /vagrant/index.html /var/www/html/index.html
-```
+### 12.2 Přidání testovací stránky
+Součástí projektu je jednoduchý soubor `index.html`, který se zobrazí po spuštění.  
+Vytvoř soubor `index.html` s následujícím obsahem:
+  ```html
+  <!DOCTYPE html>
+  <html>
+  <head>
+    <title>Vagrant NGINX</title>
+  </head>
+  <body>
+    <h1>Hello from Vagrant NGINX provisioning!</h1>
+  </body>
+  </html>
+  ```
+Uprav `provision.sh`, aby soubor nakopíroval do `/var/www/html`:
+  ```bash
+  cp /vagrant/index.html /var/www/html/index.html
+  ```
 
-### Další kroky
-...
-
-🛠 Další kroky
-Přidat logování do provision.sh.
-Přidat další komponenty (např. firewall, fail2ban).
-Vytvořit GitHub Pages dokumentaci.
+### 12.3 Další kroky
+Přidat logování do `provision.sh`.
+Implementovat další komponenty (např. firewall, fail2ban).
+Vytvořit dokumentaci pomocí GitHub Pages.
 
 ---
-## 10. Autor
+## 13. Autor
 Projekt vypracovala [Michaela Kučerová](https://github.com/Miska296)  
 Verze: 1.0  
 Datum: září 2025
 
 ---
-## 11. Licence
+## 14. Licence
 Tento projekt je dostupný pod licencí MIT. Podrobnosti viz soubor [LICENSE](LICENSE).
