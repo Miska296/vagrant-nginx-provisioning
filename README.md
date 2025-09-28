@@ -83,7 +83,7 @@ Tím zajistíš, že:
 - Testování proběhne přímo ve Vagrant VM bez nutnosti vzdáleného připojení
   
 Soubor `inventory/hosts` je klíčový pro správné fungování playbooku. Umožňuje oddělení testovací konfigurace od Codespace a zajišťuje, že Ansible použije lokální připojení bez SSH. Díky tomu se proměnné ze skupiny `web` načtou správně i pro `localhost`, včetně Vault proměnných potřebných pro roli `webserver`.
-> ✅ Po dokončení tohoto kroku budeš mít připravené prostředí pro bezpečné testování Ansible playbooku ve Vagrant VM.
+> Po dokončení tohoto kroku budeš mít připravené prostředí pro bezpečné testování Ansible playbooku ve Vagrant VM.
 
 ---
 ### 6.3 Ansible Vault
@@ -140,55 +140,48 @@ Pak můžeš testovat z hostitelského systému:
   curl http://localhost:8080
   ```
 
-----------------------
+---
 ## 7. Technické shrnutí role `webserver`
 Tato část slouží jako rekapitulace hlavních kroků prováděných rolí `webserver`. Podrobnosti najdete v sekci 6.
 
 ### 7.1 Webová služba
-Role `webserver` provádí následující kroky
 - Vytvoření uživatele `webapp` se shellem `/bin/bash`
-- Instalaci a konfiguraci webserveru NGINX
-- Generování statické webové stránky pomocí šablony `index.html.j2` s proměnnými `welcome_message` a `admin_user`
-- Uložení souboru `index.html` do složky `/opt/static-sites`, vlastněné uživatelem `webapp`
-- Nastavení oprávnění pro přístup skupiny `www-data`
-- Ověření dostupnosti webové stránky pomocí modulu `uri`
+- Instalace a konfigurace NGINX
+- Generování statické webové stránky pomocí šablony `index.html.j2`
+- Uložení souboru do `/opt/static-sites`, vlastněné uživatelem `webapp`
+- Nastavení oprávnění pro skupinu `www-data`
+- Ověření dostupnosti pomocí modulu `uri`
 
 ---
 ### 7.2 Konfigurace NGINX
-- Konfigurace pomocí šablony `nginx.conf.j2`
-- Obsah webu uložen v `/opt/static-sites/index.html`
-- Vlastníkem obsahu je `webapp`, přístup umožněn skupině `www-data`
-- Webová stránka dostupná na portu `80`, ověřena pomocí:
+- Použití šablony `nginx.conf.j2`
+- Obsah webu v `/opt/static-sites/index.html`
+- Web dostupný na portu `80`, ověřen pomocí:
   ```bash
   curl http://localhost
   ```
 
 ---
 ### 7.3 Kroky provisioning skriptu
-- Nasazení vlastní konfigurace NGINX (`sites-available/static-site`)
-- Aktivace konfigurace pomocí symlinku do `sites-enabled`
-- Nastavení oprávnění pro přístup uživatele `www-data` ke složce `static-sites`
-- Validace dostupnosti webu pomocí modulu `uri`
-> Poznámka: Tyto kroky jsou již podrobně popsány v sekcích 6.1 a 6.2 výše. Tato část slouží jako stručné shrnutí provisioning procesu.
+- Nasazení konfigurace `sites-available/static-site`
+- Aktivace pomocí symlinku do `sites-enabled`
+- Nastavení oprávnění pro `www-data`
+- Validace dostupnosti pomocí modulu `uri`
 
------------------------------------------------------------------
 ---
 # Výsledky a ověření
-## 7. Výsledek
-Po spuštění se otevře virtuální stroj s nainstalovaným NGINX. Webová stránka bude dostupná na `http://localhost:8080`.
-Webová stránka se úspěšně zobrazuje na portu `80` s obsahem generovaným pomocí Ansible. Funkčnost byla ověřena lokálně ve Vagrant VM.
+## 8. Výsledky a ověření
+Po spuštění se otevře virtuální stroj s nainstalovaným NGINX. Webová stránka je dostupná na `http://localhost:8080` a úspěšně se zobrazuje na portu `80` s obsahem generovaným pomocí Ansible. Funkčnost byla ověřena lokálně ve Vagrant VM.
 
-🌐 Co projekt dělá
-- Vytvoří Ubuntu virtuální stroj pomocí Vagrantu.
-- Spustí provision.sh, který:
-  - Nainstaluje NGINX.
-  - Zkopíruje testovací HTML stránku do /var/www/html.
-  - Spustí službu NGINX.
+### 8.1 Co projekt dělá
+- Vytvoří Ubuntu virtuální stroj pomocí Vagrantu
+- Spustí `provision.sh`, který:
+  - Nainstaluje NGINX
+  - Zkopíruje testovací HTML stránku do `/var/www/html`
+  - Spustí službu NGINX
 
----
-### 7.1 Testování a ověření
-Testovací běh proběhl dne **12. září 2025**.  
-Výsledky:
+### 8.2 Testování a ověření
+Testovací běh proběhl dne **12. září 2025**. Výsledky:
 - Playbook `playbook.yml` proběhl bez chyb (`ok=16`, `changed=12`, `failed=0`)
 - Uživatel `webapp` byl úspěšně vytvořen
 - Webserver NGINX byl nainstalován, nakonfigurován a restartován
@@ -201,14 +194,14 @@ Výsledky:
 Tím je potvrzena funkčnost provisioning skriptu v izolovaném prostředí.
 
 ---
-### 7.2 Doplňkové poznámky a tipy
-- Řešení chyby 403 pomocí správného nastavení skupinových práv (`www-data`)
-- Vlastní konfigurace NGINX mimo výchozí šablonu (`nginx.conf.j2`)
-- Testování v izolovaném prostředí Vagrant bez ovlivnění Codespace
-- Všechny kroky a výsledky jsou dokumentovány v tomto `README.md`
+## 9. Doplňkové poznámky
+- Řešení chyby 403 pomocí správného nastavení práv (`www-data`)
+- Vlastní konfigurace NGINX (`nginx.conf.j2`)
+- Testování v izolovaném prostředí Vagrant
+- Projekt je oddělený od Codespace konfigurace
 
----
-## 8. Spuštění playbooku v Codespace
+---------------
+## 10. Spuštění playbooku v Codespace
 Pro lokální testování v Codespace nebo Vagrant VM stačí spustit:
   ```bash
   ansible-playbook playbook.yml --ask-vault-pass -i inventory/hosts
