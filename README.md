@@ -3,22 +3,17 @@
 ![MIT License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Build](https://img.shields.io/badge/build-OK-brightgreen)
 
-Automatizované nasazení webového serveru pomocí Vagrantu a shell skriptu.
-
 ---
-# Úvodní část
-## 1. Nasazení webového serveru pomocí Vagrant a Ansible
-Projekt slouží k otestování nasazení webového serveru pomocí Ansible v izolovaném prostředí Vagrant. Umožňuje bezpečné testování playbooků bez ovlivnění hlavního repozitáře nebo Codespace konfigurace.
+## 1. Úvodní část
+Provisioning webového serveru s NGINX pomocí Ansible v izolovaném prostředí Vagrant. 
+Projekt umožňuje bezpečné testování playbooků bez ovlivnění hlavního repozitáře nebo Codespace konfigurace.
 
 Tento projekt vychází z předchozího repozitáře [ansible-web-wm](https://github.com/Miska296/ansible-web-wm), který sloužil jako základní šablona pro roli `webserver` a strukturu playbooku.
+
 > Tento projekt je dostupný také v anglické verzi: [README-en.md](README-en.md)
 
 ---
-## 2. Cíl projektu
-Provisioning webového serveru s NGINX pomocí Ansible v lokálním prostředí Vagrant. Webová stránka je generována šablonou a dostupná na portu `80`.
-
----
-## 3. Požadavky
+## 2. Požadavky
 Než projekt spustíte, ujistěte se, že máte nainstalováno:
 - [Vagrant](https://www.vagrantup.com/downloads) (virtuální prostředí)
 - [VirtualBox](https://www.virtualbox.org/wiki/Downloads) (poskytovatel VM)
@@ -27,16 +22,21 @@ Než projekt spustíte, ujistěte se, že máte nainstalováno:
 - NGINX (webový server)
 
 ---
-## 🚀 Jak spustit projekt
-```bash
-git clone https://github.com/Miska296/vagrant-nginx-provisioning.git
-cd vagrant-nginx-provisioning
-vagrant up
-```
+## 3. Jak spustit projekt
+  ```bash
+  git clone https://github.com/Miska296/vagrant-nginx-provisioning.git
+  cd vagrant-nginx-provisioning
+  vagrant up
+  ```
+Po dokončení se vytvoří virtuální stroj s nainstalovaným NGINX serverem. Webová stránka bude dostupná na adrese: `http://localhost:8080`
 
 ---
-## 4. Struktura projektu
-kořenová složka `vagrant-nginx-provisioning/`:
+## 4. Cíl projektu
+Cílem projektu je automatizované nasazení webového serveru s NGINX pomocí Ansible v lokálním prostředí Vagrant.
+
+---
+## 5. Struktura projektu
+kořenová složka `vagrant-nginx-provisioning/` obsahuje:
 - group_vars/web/vault
 - inventory/hosts
 - roles/webserver/handlers/main.yml
@@ -53,11 +53,11 @@ kořenová složka `vagrant-nginx-provisioning/`:
 ---
 ---
 # Testovací scénář
-## 5. Lokální testování Ansible playbooku ve Vagrant VM
+## 6. Lokální testování Ansible playbooku ve Vagrant VM
 Tento návod popisuje postup, jak otestovat Ansible playbooky ve Vagrant virtuálním prostředí. Testování probíhá izolovaně, bez narušení funkční konfigurace používané v Codespace.
 
 ---
-### 5.1 Příprava prostředí
+### 6.1 Příprava prostředí
 Spusť virtuální stroj pomocí Vagrantu:
   ```bash
   vagrant up
@@ -69,17 +69,8 @@ Ujisti se, že složka `/vagrant-nginx-provisioning` obsahuje:
   - `group_vars/web/vault` — šifrovaný soubor s heslem
   - `inventory/hosts` — vlastní inventář pro testování
 
-## 🚀 Jak spustit projekt
-```bash
-git clone https://github.com/Miska296/vagrant-nginx-provisioning.git
-cd vagrant-nginx-provisioning
-vagrant up
-```
-Po dokončení se vytvoří virtuální stroj s nainstalovaným NGINX serverem. Webová stránka bude dostupná na adrese:
-http://localhost:8080
-
 ---
-### 5.2 Inventář pro Vagrant
+### 6.2 Inventář pro Vagrant
 Vytvořen soubor `inventory/hosts` s obsahem:
   ```ini
   [web]
@@ -89,28 +80,30 @@ Tím zajistíš, že:
 - Proměnné z `group_vars/web` se načtou i pro `localhost`
 - Ansible nebude používat SSH, ale lokální připojení (`-c local`)
 - Vault proměnné budou dostupné pro roli `webserver`
-- Testování proběhne přímo ve Vagrant VM bez nutnosti vzdáleného připojení  
-Soubor `inventory/hosts` je klíčový pro správné fungování playbooku a jeho oddělení od Codespace konfigurace.
+- Testování proběhne přímo ve Vagrant VM bez nutnosti vzdáleného připojení
+  
+Soubor `inventory/hosts` je klíčový pro správné fungování playbooku. Umožňuje oddělení testovací konfigurace od Codespace a zajišťuje, že Ansible použije lokální připojení bez SSH. Díky tomu se proměnné ze skupiny `web` načtou správně i pro `localhost`, včetně Vault proměnných potřebných pro roli `webserver`.
+> ✅ Po dokončení tohoto kroku budeš mít připravené prostředí pro bezpečné testování Ansible playbooku ve Vagrant VM.
 
 ---
-### 5.3 Ansible Vault
-Vault soubor se nachází v `group_vars/web/vault` a obsahuje proměnnou:
+### 6.3 Ansible Vault
+Soubor Vault se nachází v `group_vars/web/vault` a obsahuje například proměnnou:
   ```yaml
   webapp_password: tajneheslo123
   ```
-Soubor je šifrován pomocí:
+Soubor vytvoříš pomocí příkazu:
   ```bash
   ansible-vault create group_vars/web/vault
   ```
-Při spuštění playbooku je nutné zadat heslo:
+Při spuštění playbooku je potřeba zadat heslo pro dešifrování:
   ```bash
   ansible-playbook playbook.yml --ask-vault-pass -i inventory/hosts
   ```
-Díky nastavení `ansible_connection=local` v inventáři není nutné přidávat parametr `-c local`.
+Díky nastavení `ansible_connection=local` v souboru `inventory/hosts` není nutné přidávat parametr `-c local`.
 
 ---
-### 5.4 Testování vytvoření uživatele
-Po úspěšném spuštění playbooku ověř, že uživatel `webapp` byl vytvořen:
+### 6.4 Testování vytvoření uživatele
+Po úspěšném spuštění playbooku ověř, že byl vytvořen uživatel `webapp`:
   ```bash
   id webapp
   getent passwd webapp
@@ -123,7 +116,7 @@ Očekávaný výstup:
 Test proběhl úspěšně – uživatel `webapp` byl vytvořen s domovským adresářem a shellem `/bin/bash`.
 
 ---
-### 5.5 Testování webového serveru
+### 6.5 Testování webového serveru
 Pokud je součástí provisioning skriptu instalace NGINX:
 - Ověř, že NGINX běží:
   ```bash
@@ -147,46 +140,12 @@ Pak můžeš testovat z hostitelského systému:
   curl http://localhost:8080
   ```
 
-## Vylepšení provision.sh
-Můžeme přidat kontrolu, jestli je NGINX už nainstalovaný:
-```bash
-if ! command -v nginx &> /dev/null; then
-  echo "Installing NGINX..."
-  apt-get update
-  apt-get install -y nginx
-else
-  echo "NGINX is already installed."
-fi
-```
+----------------------
+## 7. Technické shrnutí role `webserver`
+Tato část slouží jako rekapitulace hlavních kroků prováděných rolí `webserver`. Podrobnosti najdete v sekci 6.
 
-## Přidání testovací stránky
-Součástí projektu je jednoduchý soubor index.html, který se zobrazí po spuštění.  
-Vytvoř soubor index.html s jednoduchým obsahem:
-```html
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Vagrant NGINX</title>
-</head>
-<body>
-  <h1>Hello from Vagrant NGINX provisioning!</h1>
-</body>
-</html>
-```
-A uprav provision.sh, aby ho nakopíroval do /var/www/html:
-```bash
-cp /vagrant/index.html /var/www/html/index.html
-```
-
-🛠 Další kroky
-Přidat logování do provision.sh.
-Přidat další komponenty (např. firewall, fail2ban).
-Vytvořit GitHub Pages dokumentaci.
-
----
-## 6. Technické detaily
-### 6.1 Webová služba
-Role `webserver` provádí následující kroky:
+### 7.1 Webová služba
+Role `webserver` provádí následující kroky
 - Vytvoření uživatele `webapp` se shellem `/bin/bash`
 - Instalaci a konfiguraci webserveru NGINX
 - Generování statické webové stránky pomocí šablony `index.html.j2` s proměnnými `welcome_message` a `admin_user`
@@ -195,7 +154,7 @@ Role `webserver` provádí následující kroky:
 - Ověření dostupnosti webové stránky pomocí modulu `uri`
 
 ---
-### 6.2 Konfigurace NGINX
+### 7.2 Konfigurace NGINX
 - Konfigurace pomocí šablony `nginx.conf.j2`
 - Obsah webu uložen v `/opt/static-sites/index.html`
 - Vlastníkem obsahu je `webapp`, přístup umožněn skupině `www-data`
@@ -205,14 +164,14 @@ Role `webserver` provádí následující kroky:
   ```
 
 ---
-### 6.3 Kroky provisioning skriptu
+### 7.3 Kroky provisioning skriptu
 - Nasazení vlastní konfigurace NGINX (`sites-available/static-site`)
 - Aktivace konfigurace pomocí symlinku do `sites-enabled`
 - Nastavení oprávnění pro přístup uživatele `www-data` ke složce `static-sites`
 - Validace dostupnosti webu pomocí modulu `uri`
 > Poznámka: Tyto kroky jsou již podrobně popsány v sekcích 6.1 a 6.2 výše. Tato část slouží jako stručné shrnutí provisioning procesu.
 
----
+-----------------------------------------------------------------
 ---
 # Výsledky a ověření
 ## 7. Výsledek
@@ -276,6 +235,51 @@ Zobrazený obsah:
 - Vault proměnné se načítají správně díky přiřazení `localhost` do skupiny `web`
 - Projekt je izolovaný od Codespace a hlavního GitHub repozitáře
 - Vhodné pro testování, výuku nebo demonstraci provisioning procesů
+
+---
+## 🛠 Doporučená vylepšení
+### Vylepšení `provision.sh`
+...
+## Vylepšení provision.sh
+Můžeme přidat kontrolu, jestli je NGINX už nainstalovaný:
+```bash
+if ! command -v nginx &> /dev/null; then
+  echo "Installing NGINX..."
+  apt-get update
+  apt-get install -y nginx
+else
+  echo "NGINX is already installed."
+fi
+```
+
+### Přidání testovací stránky
+...
+## Přidání testovací stránky
+Součástí projektu je jednoduchý soubor index.html, který se zobrazí po spuštění.  
+Vytvoř soubor index.html s jednoduchým obsahem:
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Vagrant NGINX</title>
+</head>
+<body>
+  <h1>Hello from Vagrant NGINX provisioning!</h1>
+</body>
+</html>
+```
+A uprav provision.sh, aby ho nakopíroval do /var/www/html:
+```bash
+cp /vagrant/index.html /var/www/html/index.html
+```
+
+### Další kroky
+...
+
+🛠 Další kroky
+Přidat logování do provision.sh.
+Přidat další komponenty (např. firewall, fail2ban).
+Vytvořit GitHub Pages dokumentaci.
 
 ---
 ## 10. Autor
